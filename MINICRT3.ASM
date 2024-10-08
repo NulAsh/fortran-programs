@@ -11,6 +11,15 @@ RDK_INT         PROTO   FORTRAN
 PLAYNUM         PROTO   FORTRAN, N:FAR PTR WORD
 ISANYKEYDOWN    PROTO   FORTRAN
 LASTSCAN        PROTO   FORTRAN
+PEEKB           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+PEEKW           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+PEEKL           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+POKEB           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD,
+                                 X:FAR PTR BYTE
+POKEW           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD,
+                                 X:FAR PTR WORD
+POKEL           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD,
+                                 X:FAR PTR DWORD
 
         .DATA
 
@@ -338,6 +347,75 @@ mbindiv endp
 
 OPTION PROLOGUE:PrologueDef
 OPTION EPILOGUE:EpilogueDef
+
+PEEKB   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+        les     bx, SEGM
+        mov     ax, es:[bx]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, ax
+        mov     al, es:[bx]
+        ret
+PEEKB   ENDP
+
+PEEKW   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+        les     bx, SEGM
+        mov     ax, es:[bx]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, ax
+        mov     ax, es:[bx]
+        ret
+PEEKW   ENDP
+
+PEEKL   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD
+        les     bx, SEGM
+        mov     ax, es:[bx]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, ax
+        mov     ax, es:[bx]
+        mov     dx, es:[bx+2]
+        ret
+PEEKL   ENDP
+
+POKEB   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD, X:FAR PTR BYTE
+        les     bx, SEGM
+        mov     cx, es:[bx]
+        les     bx, X
+        mov     al, es:[bx]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, cx
+        mov     es:[bx], al
+        ret
+POKEB   ENDP
+
+POKEW   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD, X:FAR PTR WORD
+        les     bx, SEGM
+        mov     cx, es:[bx]
+        les     bx, X
+        mov     ax, es:[bx]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, cx
+        mov     es:[bx], ax
+        ret
+POKEW   ENDP
+
+POKEL   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD, X:FAR PTR DWORD
+        les     bx, SEGM
+        mov     cx, es:[bx]
+        les     bx, X
+        mov     ax, es:[bx]
+        mov     dx, es:[bx+2]
+        les     bx, OFS
+        mov     bx, es:[bx]
+        mov     es, cx
+        mov     es:[bx], ax
+        mov     es:[bx+2], dx
+        ret
+POKEL   ENDP
 
 PLAYNUM PROC FORTRAN, N:FAR PTR WORD
         LOCAL   basefr:WORD
