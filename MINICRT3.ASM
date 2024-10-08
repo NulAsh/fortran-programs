@@ -20,6 +20,10 @@ POKEW           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD,
                                  X:FAR PTR WORD
 POKEL           PROTO   FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD,
                                  X:FAR PTR DWORD
+PORTINB         PROTO   FORTRAN, PORTNUM: FAR PTR WORD
+PORTINW         PROTO   FORTRAN, PORTNUM: FAR PTR WORD
+PORTOUTB        PROTO   FORTRAN, PORTNUM: FAR PTR WORD, X:FAR PTR BYTE
+PORTOUTW        PROTO   FORTRAN, PORTNUM: FAR PTR WORD, X:FAR PTR WORD
 
         .DATA
 
@@ -416,6 +420,38 @@ POKEL   PROC FORTRAN, SEGM:FAR PTR WORD, OFS:FAR PTR WORD, X:FAR PTR DWORD
         mov     es:[bx+2], dx
         ret
 POKEL   ENDP
+
+PORTINB PROC FORTRAN, PORTNUM:FAR PTR WORD
+        les     bx, PORTNUM
+        mov     dx, es:[bx]
+        in      al, dx
+        ret
+PORTINB ENDP
+
+PORTINW PROC FORTRAN, PORTNUM:FAR PTR WORD
+        les     bx, PORTNUM
+        mov     dx, es:[bx]
+        in      ax, dx
+        ret
+PORTINW ENDP
+
+PORTOUTB        PROC FORTRAN, PORTNUM: FAR PTR WORD, X:FAR PTR BYTE
+        les     bx, PORTNUM
+        mov     dx, es:[bx]
+        les     bx, X
+        mov     al, es:[bx]
+        out     dx, al
+        ret
+PORTOUTB        ENDP
+
+PORTOUTW        PROC FORTRAN, PORTNUM: FAR PTR WORD, X:FAR PTR WORD
+        les     bx, PORTNUM
+        mov     dx, es:[bx]
+        les     bx, X
+        mov     ax, es:[bx]
+        out     dx, ax
+        ret
+PORTOUTW        ENDP
 
 PLAYNUM PROC FORTRAN, N:FAR PTR WORD
         LOCAL   basefr:WORD
